@@ -10,7 +10,6 @@ public class SnakeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Scene scene = SceneManager.GetSceneByName("SampleScene");
         getSnakes();
     }
 
@@ -39,9 +38,36 @@ public class SnakeMovement : MonoBehaviour
     {
         foreach (GameObject snake in this.snakes)
         {
-            Debug.Log(snake.name);
             SnakeBehaviour behaviour = snake.GetComponent<SnakeBehaviour>();
-            Debug.Log(behaviour.getDirection());
+            string direction = behaviour.getDirection();
+            Transform snakeTransform = snake.GetComponent<Transform>();
+            float xPosition = snakeTransform.position.x;
+            float yPosition = snakeTransform.position.y;
+
+            if (direction == "up")
+            {
+                snakeTransform.position = new Vector2(xPosition, yPosition + (float) 0.5);
+            }
+
+            if (direction == "down")
+            {
+                snakeTransform.position = new Vector2(xPosition, yPosition - (float) 0.5);
+
+            }
+
+            if (direction == "left")
+            {
+                snakeTransform.position = new Vector2(xPosition - (float) 0.5, yPosition);
+
+            }
+
+            if (direction == "right")
+            {
+                snakeTransform.position = new Vector2(xPosition + (float)0.5, yPosition);
+
+            }
+
+
         }
     }
 }

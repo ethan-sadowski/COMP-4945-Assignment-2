@@ -27,7 +27,23 @@ namespace Snake
         // Update is called once per frame
         void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                this.direction = "up";
+            }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                this.direction = "down";
+                Debug.Log("S");
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                this.direction = "left";
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                this.direction = "right";
+            }
         }
 
         public string getDirection()
