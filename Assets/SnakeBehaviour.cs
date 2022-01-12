@@ -34,7 +34,6 @@ namespace Snake
             if (Input.GetKeyDown(KeyCode.S))
             {
                 this.direction = "down";
-                Debug.Log("S");
             }
             if (Input.GetKeyDown(KeyCode.A))
             {

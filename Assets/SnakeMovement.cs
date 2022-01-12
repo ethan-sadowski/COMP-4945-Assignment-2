@@ -7,9 +7,12 @@ using Snake;
 public class SnakeMovement : MonoBehaviour
 {
     List<GameObject> snakes;
+    float movementTimer;
+    float movementTimerLimit = 0.15f;
     // Start is called before the first frame update
     void Start()
     {
+        movementTimer = movementTimerLimit;
         getSnakes();
     }
 
@@ -36,39 +39,54 @@ public class SnakeMovement : MonoBehaviour
 
     void moveSnakes()
     {
-        foreach (GameObject snake in this.snakes)
+        if (executeMovement())
         {
-            SnakeBehaviour behaviour = snake.GetComponent<SnakeBehaviour>();
-            string direction = behaviour.getDirection();
-            Transform snakeTransform = snake.GetComponent<Transform>();
-            float xPosition = snakeTransform.position.x;
-            float yPosition = snakeTransform.position.y;
-
-            if (direction == "up")
+            foreach (GameObject snake in this.snakes)
             {
-                snakeTransform.position = new Vector2(xPosition, yPosition + (float) 0.5);
+                SnakeBehaviour behaviour = snake.GetComponent<SnakeBehaviour>();
+                string direction = behaviour.getDirection();
+                Transform snakeTransform = snake.GetComponent<Transform>();
+                float xPosition = snakeTransform.position.x;
+                float yPosition = snakeTransform.position.y;
+                Debug.Log(xPosition + ", " + yPosition);
+                if (direction == "up")
+                {
+                    snakeTransform.position = new Vector2(xPosition, yPosition + 1);
+                }
+
+                if (direction == "down")
+                {
+                    snakeTransform.position = new Vector2(xPosition, yPosition - 1);
+                }
+
+                if (direction == "left")
+                {
+                    snakeTransform.position = new Vector2(xPosition - 1, yPosition);
+                }
+
+                if (direction == "right")
+                {
+                    snakeTransform.position = new Vector2(xPosition + 1, yPosition);
+                }
             }
-
-            if (direction == "down")
-            {
-                snakeTransform.position = new Vector2(xPosition, yPosition - (float) 0.5);
-
-            }
-
-            if (direction == "left")
-            {
-                snakeTransform.position = new Vector2(xPosition - (float) 0.5, yPosition);
-
-            }
-
-            if (direction == "right")
-            {
-                snakeTransform.position = new Vector2(xPosition + (float)0.5, yPosition);
-
-            }
-
-
         }
+    }
+
+    bool executeMovement()
+    {
+        movementTimer += Time.deltaTime;
+        if (movementTimer >= movementTimerLimit)
+        {
+            movementTimer -= movementTimerLimit;
+            return true;
+        }
+        return false;
+    }
+
+    void moveToNextLocation(Vector2 vectorInput)
+    {
+
+
     }
 }
 
