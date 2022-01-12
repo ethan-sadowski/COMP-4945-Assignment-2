@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Snake;
 
 public class SnakeMovement : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class SnakeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Scene scene = SceneManager.GetSceneByName("SampleScene"); 
+        Scene scene = SceneManager.GetSceneByName("SampleScene");
         getSnakes();
     }
 
@@ -39,6 +40,9 @@ public class SnakeMovement : MonoBehaviour
         foreach (GameObject snake in this.snakes)
         {
             Debug.Log(snake.name);
+            SnakeBehaviour behaviour = snake.GetComponent<SnakeBehaviour>();
+            Debug.Log(behaviour.getDirection());
         }
     }
 }
+

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets
+namespace Snake
 {
     public class SnakeBehaviour : MonoBehaviour
     {
@@ -28,6 +28,16 @@ namespace Assets
         void Update()
         {
 
+        }
+
+        public string getDirection()
+        {
+            return this.direction;
+        }
+
+        public void test()
+        {
+            Debug.Log("Working");
         }
     }
 }
