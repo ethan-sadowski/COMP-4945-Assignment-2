@@ -51,22 +51,22 @@ public class SnakeMovement : MonoBehaviour
                 Debug.Log(xPosition + ", " + yPosition);
                 if (direction == "up")
                 {
-                    snakeTransform.position = new Vector2(xPosition, yPosition + 1);
+                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
                 }
 
                 if (direction == "down")
                 {
-                    snakeTransform.position = new Vector2(xPosition, yPosition - 1);
+                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition - 1));
                 }
 
                 if (direction == "left")
                 {
-                    snakeTransform.position = new Vector2(xPosition - 1, yPosition);
+                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition - 1, yPosition));
                 }
 
                 if (direction == "right")
                 {
-                    snakeTransform.position = new Vector2(xPosition + 1, yPosition);
+                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
                 }
             }
         }
@@ -83,9 +83,29 @@ public class SnakeMovement : MonoBehaviour
         return false;
     }
 
-    void moveToNextLocation(Vector2 vectorInput)
+    Vector2 calculateNextLocation(Vector2 vectorInput)
     {
+        if (vectorInput.x > 44)
+        {
+            return new Vector2(-44, vectorInput.y);
+        }
 
+        if (vectorInput.x < -44)
+        {
+            return new Vector2(44, vectorInput.y);
+        }
+
+        if (vectorInput.y < -24.5)
+        {
+            return new Vector2(vectorInput.x, (float) 24.5);
+        }
+
+        if (vectorInput.y > 24.5)
+        {
+            return new Vector2(vectorInput.x, (float) -24.5);
+        }
+
+        return vectorInput;
 
     }
 }
