@@ -49,6 +49,7 @@ public class SnakeMovement : MonoBehaviour
                 float xPosition = snakeTransform.position.x;
                 float yPosition = snakeTransform.position.y;
                 Debug.Log(xPosition + ", " + yPosition);
+                behaviour.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
                 if (direction == "up")
                 {
                     snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
@@ -68,6 +69,7 @@ public class SnakeMovement : MonoBehaviour
                 {
                     snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
                 }
+                behaviour.moveBody();
             }
         }
     }
