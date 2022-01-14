@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Snake;
+using SnakeBehaviour;
 
 public class SnakeMovement : MonoBehaviour
 {
@@ -30,7 +30,7 @@ public class SnakeMovement : MonoBehaviour
         GameObject[] sceneObjects = scene.GetRootGameObjects();
         foreach (GameObject obj in sceneObjects)
         {
-            if (obj.GetComponent("SnakeBehaviour") != null)
+            if (obj.GetComponent("SnakeBehaviour.Snake") != null)
             {
                 snakes.Add(obj);
             }
@@ -41,15 +41,14 @@ public class SnakeMovement : MonoBehaviour
     {
         if (executeMovement())
         {
-            foreach (GameObject snake in this.snakes)
+            foreach (GameObject snakeObj in this.snakes)
             {
-                SnakeBehaviour behaviour = snake.GetComponent<SnakeBehaviour>();
-                string direction = behaviour.getDirection();
-                Transform snakeTransform = snake.GetComponent<Transform>();
+                Snake snake = snakeObj.GetComponent<Snake>();
+                string direction = snake.getDirection();
+                Transform snakeTransform = snakeObj.GetComponent<Transform>();
                 float xPosition = snakeTransform.position.x;
                 float yPosition = snakeTransform.position.y;
-                Debug.Log(xPosition + ", " + yPosition);
-                behaviour.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
+                snake.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
                 if (direction == "up")
                 {
                     snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
@@ -69,7 +68,8 @@ public class SnakeMovement : MonoBehaviour
                 {
                     snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
                 }
-                behaviour.moveBody();
+                snake.moveBody();
+                snake.enableTurning();
             }
         }
     }
