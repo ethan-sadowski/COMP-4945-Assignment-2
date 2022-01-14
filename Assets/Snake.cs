@@ -2,21 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Snake
+namespace SnakeBehaviour
 {
-    public class SnakeBehaviour : MonoBehaviour
+    public class Snake : MonoBehaviour
     {
+
         public GameObject snakeHeadPrefab;
         public GameObject snakeBodyPrefab;
+        private GameObject snakeHead;
         private List<GameObject> snakeBody;
         private string direction = "up";
         private Vector2 previousHeadLocation;
-
-        // Start is called before the first frame update
+        private bool canTurn;
         void Start()
         {
-            createBody();
-
+            canTurn = true;
+            createBody(this.snakeBodyPrefab);
         }
 
         public string getDirection()
@@ -24,16 +25,15 @@ namespace Snake
             return this.direction;
         }
 
-        private void createBody()
+        private void createBody(GameObject bodyPrefab)
         {
-            snakeBody = new List<GameObject>();
+            this.snakeBody = new List<GameObject>();
             GameObject newBodyPiece;
             for (int i = 0; i < 3; i++)
             {
-                newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject;
+                newBodyPiece = Instantiate(bodyPrefab) as GameObject;
                 newBodyPiece.SetActive(true);
-                Debug.Log(newBodyPiece);
-                snakeBody.Add(newBodyPiece);
+                this.snakeBody.Add(newBodyPiece);
             }
         }
 
@@ -45,6 +45,7 @@ namespace Snake
         public void moveBody()
         {
             Vector2 bodyPlaceHolder;
+            
             bodyPlaceHolder = this.snakeBody[0].GetComponent<Transform>().position;
             this.snakeBody[0].GetComponent<Transform>().position = this.previousHeadLocation;
             for (int i = 1; i < this.snakeBody.Count; i++)
@@ -55,24 +56,33 @@ namespace Snake
             }
         }
 
+        public void enableTurning()
+        {
+            this.canTurn = true;
+        }
+
         // Update is called once per frame
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.W) && this.direction != "down" && canTurn)
             {
                 this.direction = "up";
+                canTurn = false;
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S) && this.direction != "up" && canTurn)
             {
                 this.direction = "down";
+                canTurn = false;
             }
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A) && this.direction != "right" && canTurn)
             {
                 this.direction = "left";
+                canTurn = false;
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.D) && this.direction != "left" && canTurn)
             {
                 this.direction = "right";
+                canTurn = false;
             }
         }
     }
