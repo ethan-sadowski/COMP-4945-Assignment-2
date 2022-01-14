@@ -54,7 +54,7 @@ public class SenderThread {
             String s;
             bool done = false;
 
-            Snake snake = new Snake(2, 4, "Sample UID 123");
+            Snake snake = new Snake(0, 0, "new Snake");
             // Send a multicast of a deconstructed snake object
             // Stringify x coordinate of the snake
             string snakeInfo = "xcoordinate: " + snake.x.ToString() + "---end-x---\n";
@@ -127,15 +127,17 @@ public class ReceiverThread {
                   //remoteEP.ToString(),
                   //snakeInfo);
 
+                //TODO: Add a conditional check to see what type of message the broadcast is (update position, delete snake (aka. snake died), etc.)
+
                 // Parse x coordinate of the snake
                 int xStart = snakeInfo.IndexOf("xcoordinate: ") + 13;
                 int xEnd = snakeInfo.IndexOf("---end-x---");
-                string xcoordinate = snakeInfo.Substring(xStart, xEnd - xStart);
+                int xcoordinate = int.Parse(snakeInfo.Substring(xStart, xEnd - xStart));
 
                 // Parse y coordinate of the snake
                 int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
                 int yEnd = snakeInfo.IndexOf("---end-y---");
-                string ycoordinate = snakeInfo.Substring(yStart, yEnd - yStart);
+                int ycoordinate = int.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
 
                 // Parse UID of the snake
                 int uidStart = snakeInfo.IndexOf("uid: ") + 5;
@@ -149,28 +151,33 @@ public class ReceiverThread {
                 snakes.Add(s1);
                 snakes.Add(s2);
 
+                // Determine if the snake is a new Connection or if the snake is already in the game
                 int snakeIndex = 0;
-                bool newSnake = true;
-                for( int i = 0; i < snakes.Count(); i++)
+                bool isNewSnake = true;
+                for( int i = 0; i < snakes.Count; i++)
                 {
-                    Console.WriteLine(s.uid);
+                    //Console.WriteLine(s.uid);
                     if (snakes[i].uid == uid)
                     {
-                        newSnake = false;
+                        isNewSnake = false;
                         snakeIndex = i;
                         break;
                     }
                 }
-                if (newSnake)
+                // If the snake is a new connection create a new snake
+                if (isNewSnake)
                 {
-                    // Create a new snake here
-                } else
+                    Snake newSnake = new Snake(xcoordinate, ycoordinate, uid);
+                    Console.WriteLine("adding new snake: " + newSnake.uid);
+                    snakes.Add(newSnake);
+                } 
+                // Else update the existing snake's position
+                else
                 {
-                    // Update old Snake's position here using snakeIndex
+                    Console.WriteLine("updating old snake: " + snakes[snakeIndex].uid);
+                    snakes[snakeIndex].x = xcoordinate;
+                    snakes[snakeIndex].y = ycoordinate;
                 }
-
-
-
             }
 
             mcastSocket.Close();
@@ -182,16 +189,11 @@ public class ReceiverThread {
 
 class TestMulticastOptionSender {
 
-
-
     static void Main() {
 
         Thread receiver = new Thread(ReceiverThread.run);
         Thread sender = new Thread(SenderThread.run);
         sender.Start();
         receiver.Start();
-        
-
-
     }
 }
