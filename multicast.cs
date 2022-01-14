@@ -3,6 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+//using Snakes.Snake;
+using System.IO;
+using System.Collections.Generic;
 
 // This sender example must be used in conjunction with the listener program.
 // You must run this program as follows:
@@ -11,6 +14,20 @@ using System.Threading;
 // the local IPAddress to use. To obtain this address,  run the ipconfig command 
 // from the command line. 
 //  
+
+public class Snake
+{
+    public int x;
+    public int y;
+    public string uid;
+
+    public Snake(int x, int y, string uid)
+    {
+        this.x = x;
+        this.y = y;
+        this.uid = uid;
+    }
+}
 
 public class SenderThread {
 
@@ -36,10 +53,24 @@ public class SenderThread {
             endPoint = new IPEndPoint(mcastAddress, mcastPort);
             String s;
             bool done = false;
-            while(!done) {
+
+            Snake snake = new Snake(2, 4, "Sample UID 123");
+            // Send a multicast of a deconstructed snake object
+            // Stringify x coordinate of the snake
+            string snakeInfo = "xcoordinate: " + snake.x.ToString() + "---end-x---\n";
+            // Stringify y coordinate of the snake
+            snakeInfo += "ycoordinate: " + snake.y.ToString() + "---end-y---";
+            // Stringify UID of the snake
+            snakeInfo += "uid: " + snake.uid + "---end-uid---";
+
+            Console.WriteLine(snakeInfo);
+
+            mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
+            while (!done) {
                 s = Console.ReadLine();
                 mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(s), endPoint);
             }
+            
             
         } catch(Exception e) {
             Console.WriteLine("\n" + e.ToString());
@@ -89,12 +120,55 @@ public class ReceiverThread {
 
             while(!done) {
                 Console.WriteLine("Waiting for multicast packets.......");
-
                 mcastSocket.ReceiveFrom(bytes, ref remoteEP);
+                string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                
+                //Console.WriteLine("Received broadcast from {0} :\n {1}\n",
+                  //remoteEP.ToString(),
+                  //snakeInfo);
 
-                Console.WriteLine("Received broadcast from {0} :\n {1}\n",
-                  remoteEP.ToString(),
-                  Encoding.ASCII.GetString(bytes, 0, bytes.Length));
+                // Parse x coordinate of the snake
+                int xStart = snakeInfo.IndexOf("xcoordinate: ") + 13;
+                int xEnd = snakeInfo.IndexOf("---end-x---");
+                string xcoordinate = snakeInfo.Substring(xStart, xEnd - xStart);
+
+                // Parse y coordinate of the snake
+                int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
+                int yEnd = snakeInfo.IndexOf("---end-y---");
+                string ycoordinate = snakeInfo.Substring(yStart, yEnd - yStart);
+
+                // Parse UID of the snake
+                int uidStart = snakeInfo.IndexOf("uid: ") + 5;
+                int uidEnd = snakeInfo.IndexOf("---end-uid---");
+                string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
+
+                // Instantiate 2 demo Snakes and add them to the snakes List
+                List<Snake> snakes = new List<Snake>(); // Don't instantiate this every time in final product. Bring out of while loop
+                Snake s1 = new Snake(0, 0, "s1");
+                Snake s2 = new Snake(1, 1, "s2");
+                snakes.Add(s1);
+                snakes.Add(s2);
+
+                int snakeIndex = 0;
+                bool newSnake = true;
+                for( int i = 0; i < snakes.Count(); i++)
+                {
+                    Console.WriteLine(s.uid);
+                    if (snakes[i].uid == uid)
+                    {
+                        newSnake = false;
+                        snakeIndex = i;
+                        break;
+                    }
+                }
+                if (newSnake)
+                {
+                    // Create a new snake here
+                } else
+                {
+                    // Update old Snake's position here using snakeIndex
+                }
+
 
 
             }
