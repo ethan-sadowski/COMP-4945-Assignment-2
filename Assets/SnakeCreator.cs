@@ -28,6 +28,9 @@ public class SnakeCreator : MonoBehaviour
     {
         GameObject newSnake = new GameObject("Snake " + snakeCount.ToString());
         newSnake.AddComponent<Snake>();
+        newSnake.AddComponent<SpriteRenderer>();
+        newSnake.GetComponent<SpriteRenderer>().color = snakeHeadPrefab.GetComponent<SpriteRenderer>().color;
+        newSnake.GetComponent<SpriteRenderer>().sprite = snakeHeadPrefab.GetComponent<SpriteRenderer>().sprite;
         newSnake.GetComponent<Snake>().snakeBodyPrefab = snakeBodyPrefab;
         newSnake.GetComponent<Transform>().position = generateStartingLocation();
         newSnake.SetActive(true);
