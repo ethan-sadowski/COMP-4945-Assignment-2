@@ -84,12 +84,16 @@ namespace MulticastReceive
                     
                 }
 
-                mcastSocket.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        ~MulticastReceiver()
+        {
+            mcastSocket.Close();
         }
 
     }
