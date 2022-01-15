@@ -89,9 +89,11 @@ namespace SnakeBehaviour
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            Debug.Log("test1");
             if (collision.name.StartsWith("Food"))
             {
                 ate = true;
+                Debug.Log("test");
 
                 Destroy(collision.gameObject);
             }
