@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace SnakeBehaviour
 {
@@ -9,6 +10,7 @@ namespace SnakeBehaviour
 
         public GameObject snakeHeadPrefab;
         public GameObject snakeBodyPrefab;
+        private Guid id;
         private GameObject snakeHead;
         private List<GameObject> snakeBody;
         private string direction = "up";
@@ -23,6 +25,26 @@ namespace SnakeBehaviour
         public string getDirection()
         {
             return this.direction;
+        }
+
+        public void setId(Guid id)
+        {
+            this.id = id;
+        }
+
+        public List<Vector2> getBodyCoordinateList()
+        {
+            List<Vector2> bodyList = new List<Vector2>();
+            foreach (GameObject bodyPart in this.snakeBody)
+            {
+                bodyList.Add(bodyPart.GetComponent<Transform>().position);
+            }
+            return bodyList;
+        }
+
+        public Guid getId()
+        {
+            return this.id;
         }
 
         private void createBody(GameObject bodyPrefab)

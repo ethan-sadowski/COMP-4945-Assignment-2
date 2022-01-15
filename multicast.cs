@@ -114,7 +114,7 @@ public class ReceiverThread {
 
 
             bool done = false;
-            byte[] bytes = new Byte[100];
+            byte[] bytes = new Byte[1000];
             IPEndPoint groupEP = new IPEndPoint(mcastAddress, mcastPort);
             EndPoint remoteEP = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
 
@@ -122,7 +122,7 @@ public class ReceiverThread {
                 Console.WriteLine("Waiting for multicast packets.......");
                 mcastSocket.ReceiveFrom(bytes, ref remoteEP);
                 string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                
+                Console.WriteLine(snakeInfo);
                 //Console.WriteLine("Received broadcast from {0} :\n {1}\n",
                   //remoteEP.ToString(),
                   //snakeInfo);
