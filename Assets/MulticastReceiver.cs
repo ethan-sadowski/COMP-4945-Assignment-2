@@ -55,7 +55,6 @@ namespace MulticastReceive
 
                 mcastSocket.ReceiveFrom(bytes, ref remoteEP);
                 string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                Debug.Log(snakeInfo);
                 //TODO: Add a conditional check to see what type of message the broadcast is (snake movement / apple locations).
 
                 // Parse x coordinate of the snake
@@ -76,12 +75,16 @@ namespace MulticastReceive
                 Guid parsedUid = Guid.Parse(uid);
                 // If the snake is a new connection create a new snake
                 bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
-                Debug.Log(isNewSnake);
                 if (isNewSnake)
                 {
+                    // TODO refactor this to create a list of all the snake's coordinates
+                    List<Vector2> coordinateList = new List<Vector2>();
+                    coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
+
+                    Debug.Log(snakeInfo);
                     Debug.Log("new");
-                    snakeCreator.instantiateSnake(parsedUid);
-                    
+                    GameObject newSnake = snakeCreator.instantiateSnake(parsedUid, coordinateList);
+                    snakeMovement.addSnake(newSnake);
                 }
 
             }

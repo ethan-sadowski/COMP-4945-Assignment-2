@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SnakeBehaviour;
 using System;
+using SnakeMovementController;
 
 
 namespace SnakeCreation {
@@ -11,20 +12,22 @@ namespace SnakeCreation {
     {
         public GameObject snakeHeadPrefab;
         public GameObject snakeBodyPrefab;
+        public SnakeMovement snakeMovement;
         // Start is called before the first frame update
         void Start()
         {
 
         }
 
-        private Vector2 generateStartingLocation()
+        public Vector2 generateStartingLocation()
         {
             int xAxis = UnityEngine.Random.Range(-44, 44);
             float yAxis = (float)(UnityEngine.Random.Range(-22, 22) + 0.5);
             return new Vector2(xAxis, yAxis);
         }
 
-        public void instantiateSnake(Guid id)
+
+        public GameObject instantiateSnake(Guid id, List<Vector2> snakeCoordinates)
         {
             GameObject newSnake = new GameObject("Snake " + id);
             newSnake.AddComponent<Snake>();
@@ -34,17 +37,21 @@ namespace SnakeCreation {
             newSnake.GetComponent<Snake>().snakeBodyPrefab = snakeBodyPrefab;
             Debug.Log(id);
             newSnake.GetComponent<Snake>().setId(id);
-            newSnake.GetComponent<Transform>().position = generateStartingLocation();
-            newSnake.GetComponent<Snake>().createBody();
+            newSnake.GetComponent<Transform>().position = snakeCoordinates[0];
             newSnake.SetActive(true);
+            Debug.Log(newSnake);
+            return newSnake;
         }
 
-        public void instantiateSnakeAtLocation(Guid id, List<Vector2> snakeLocations)
+        private void instantiateBody(List<Vector2> snakeCoordinateList)
         {
+            for (int i = 1; i < snakeCoordinateList.Count; i++)
+            {
 
+            }
         }
 
-        public void createSnakePart()
+        public void createSnakePart(Vector2 snakeCoordinates)
         {
 
         }

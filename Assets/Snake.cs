@@ -16,6 +16,7 @@ namespace SnakeBehaviour
         private string direction = "up";
         private Vector2 previousHeadLocation;
         private bool canTurn;
+
         void Start()
         {
             canTurn = true;

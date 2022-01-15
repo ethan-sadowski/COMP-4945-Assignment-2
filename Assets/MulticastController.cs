@@ -22,10 +22,17 @@ namespace UDPController
         public SnakeMovement snakeMovement;
         public MulticastSender sender;
         public MulticastReceiver receiver;
+
         // Start is called before the first frame update
         void Start()
         {
-            snakeCreator.instantiateSnake(id);
+            Debug.Log("start");
+            Vector2 startingCoordinate = snakeCreator.generateStartingLocation();
+            List<Vector2> startingList = new List<Vector2>();
+            startingList.Add(startingCoordinate);
+            GameObject playerSnake = snakeCreator.instantiateSnake(id, startingList);
+            playerSnake.GetComponent<Snake>().createBody();
+            snakeMovement.setNativeSnakeId(id);
         }
 
         // Update is called once per frame

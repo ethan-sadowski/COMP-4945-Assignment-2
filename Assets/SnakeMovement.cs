@@ -14,7 +14,8 @@ namespace SnakeMovementController
         List<GameObject> snakes;
         float movementTimer;
         float movementTimerLimit = 0.15f;
-        
+        Guid nativeSnakeId;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -28,9 +29,15 @@ namespace SnakeMovementController
             moveSnakes();
         }
 
-        void addSnake(GameObject snake)
+        public void addSnake(GameObject snake)
         {
+            Debug.Log(snake);
             this.snakes.Add(snake);
+        }
+
+        public void setNativeSnakeId(Guid id)
+        {
+            this.nativeSnakeId = id;
         }
 
         void getSnakes()

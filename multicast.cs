@@ -63,11 +63,7 @@ public class SenderThread {
             Console.WriteLine(snakeInfo);
 
             mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
-            while (!done)
-            {
-                s = Console.ReadLine();
-                mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(s), endPoint);
-            }
+
 
         } catch(Exception e) {
             Console.WriteLine("\n" + e.ToString());
