@@ -28,6 +28,11 @@ namespace SnakeMovementController
             moveSnakes();
         }
 
+        void addSnake(GameObject snake)
+        {
+            this.snakes.Add(snake);
+        }
+
         void getSnakes()
         {
             snakes = new List<GameObject>();
@@ -42,6 +47,18 @@ namespace SnakeMovementController
             }
         }
 
+        public bool checkIfSnakeExists(Guid id)
+        {
+            foreach (GameObject snake in this.snakes)
+            {
+                if (snake.GetComponent<Snake>().getId() == id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public GameObject getSnakeById(Guid id)
         {
             Scene scene = SceneManager.GetSceneByName("SampleScene");
@@ -50,7 +67,6 @@ namespace SnakeMovementController
             {
                 if (obj.GetComponent("SnakeBehaviour.Snake") != null)
                 {
-                    Debug.Log(obj.GetComponent<Snake>().getId());
                     if (obj.GetComponent<Snake>().getId() == id)
                     {
                         return obj;

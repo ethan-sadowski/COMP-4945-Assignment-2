@@ -19,7 +19,7 @@ namespace SnakeBehaviour
         void Start()
         {
             canTurn = true;
-            createBody(this.snakeBodyPrefab);
+            
         }
 
         public string getDirection()
@@ -47,13 +47,13 @@ namespace SnakeBehaviour
             return this.id;
         }
 
-        private void createBody(GameObject bodyPrefab)
+        public void createBody()
         {
             this.snakeBody = new List<GameObject>();
             GameObject newBodyPiece;
             for (int i = 0; i < 3; i++)
             {
-                newBodyPiece = Instantiate(bodyPrefab) as GameObject;
+                newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject;
                 newBodyPiece.SetActive(true);
                 this.snakeBody.Add(newBodyPiece);
             }

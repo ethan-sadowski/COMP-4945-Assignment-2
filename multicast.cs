@@ -51,27 +51,24 @@ public class SenderThread {
 
             //Send multicast packets to the listener.
             endPoint = new IPEndPoint(mcastAddress, mcastPort);
+
             String s;
             bool done = false;
-
-            Snake snake = new Snake(0, 0, "new Snake");
-            // Send a multicast of a deconstructed snake object
-            // Stringify x coordinate of the snake
-            string snakeInfo = "xcoordinate: " + snake.x.ToString() + "---end-x---\n";
+            string snakeInfo = "xcoordinate: -15" + "---end-x---\n";
             // Stringify y coordinate of the snake
-            snakeInfo += "ycoordinate: " + snake.y.ToString() + "---end-y---";
+            snakeInfo += "ycoordinate: 12.5" + "---end-y---";
             // Stringify UID of the snake
-            snakeInfo += "uid: " + snake.uid + "---end-uid---";
+            snakeInfo += "uid: " + "baec3797-4509-4be0-a52d-6dccefa2f7ab" + "---end-uid---";
 
             Console.WriteLine(snakeInfo);
 
             mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
-            while (!done) {
+            while (!done)
+            {
                 s = Console.ReadLine();
                 mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(s), endPoint);
             }
-            
-            
+
         } catch(Exception e) {
             Console.WriteLine("\n" + e.ToString());
         }
@@ -119,10 +116,9 @@ public class ReceiverThread {
             EndPoint remoteEP = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
 
             while(!done) {
-                Console.WriteLine("Waiting for multicast packets.......");
-                mcastSocket.ReceiveFrom(bytes, ref remoteEP);
+/*                Console.WriteLine("Waiting for multicast packets.......");
+*/                mcastSocket.ReceiveFrom(bytes, ref remoteEP);
                 string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                Console.WriteLine(snakeInfo);
                 //Console.WriteLine("Received broadcast from {0} :\n {1}\n",
                   //remoteEP.ToString(),
                   //snakeInfo);
@@ -134,19 +130,16 @@ public class ReceiverThread {
                 int xEnd = snakeInfo.IndexOf("---end-x---");
                 int xcoordinate = int.Parse(snakeInfo.Substring(xStart, xEnd - xStart));
 
-                Console.WriteLine(xcoordinate);
-
                 // Parse y coordinate of the snake
                 int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
                 int yEnd = snakeInfo.IndexOf("---end-y---");
                 float ycoordinate =  float.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
 
-                Console.WriteLine(ycoordinate);
                 // Parse UID of the snake
                 int uidStart = snakeInfo.IndexOf("uid: ") + 5;
                 int uidEnd = snakeInfo.IndexOf("---end-uid---");
                 string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
-
+                Console.WriteLine(snakeInfo);
                 // Instantiate 2 demo Snakes and add them to the snakes List
                 /*List<Snake> snakes = new List<Snake>(); // Don't instantiate this every time in final product. Bring out of while loop
                 Snake s1 = new Snake(0, 0, "s1");
@@ -195,8 +188,8 @@ class TestMulticastOptionSender {
     static void Main() {
 
         Thread receiver = new Thread(ReceiverThread.run);
-/*        Thread sender = new Thread(SenderThread.run);
-*//*        sender.Start();
-*/        receiver.Start();
+        Thread sender = new Thread(SenderThread.run);
+        sender.Start();
+        receiver.Start();
     }
 }
