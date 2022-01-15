@@ -114,7 +114,7 @@ public class ReceiverThread {
 
 
             bool done = false;
-            byte[] bytes = new Byte[1000];
+            byte[] bytes = new Byte[130];
             IPEndPoint groupEP = new IPEndPoint(mcastAddress, mcastPort);
             EndPoint remoteEP = (EndPoint) new IPEndPoint(IPAddress.Any, 0);
 
@@ -134,18 +134,21 @@ public class ReceiverThread {
                 int xEnd = snakeInfo.IndexOf("---end-x---");
                 int xcoordinate = int.Parse(snakeInfo.Substring(xStart, xEnd - xStart));
 
+                Console.WriteLine(xcoordinate);
+
                 // Parse y coordinate of the snake
                 int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
                 int yEnd = snakeInfo.IndexOf("---end-y---");
-                int ycoordinate = int.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
+                float ycoordinate =  float.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
 
+                Console.WriteLine(ycoordinate);
                 // Parse UID of the snake
                 int uidStart = snakeInfo.IndexOf("uid: ") + 5;
                 int uidEnd = snakeInfo.IndexOf("---end-uid---");
                 string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
 
                 // Instantiate 2 demo Snakes and add them to the snakes List
-                List<Snake> snakes = new List<Snake>(); // Don't instantiate this every time in final product. Bring out of while loop
+                /*List<Snake> snakes = new List<Snake>(); // Don't instantiate this every time in final product. Bring out of while loop
                 Snake s1 = new Snake(0, 0, "s1");
                 Snake s2 = new Snake(1, 1, "s2");
                 snakes.Add(s1);
@@ -177,7 +180,7 @@ public class ReceiverThread {
                     Console.WriteLine("updating old snake: " + snakes[snakeIndex].uid);
                     snakes[snakeIndex].x = xcoordinate;
                     snakes[snakeIndex].y = ycoordinate;
-                }
+                }*/
             }
 
             mcastSocket.Close();
@@ -192,8 +195,8 @@ class TestMulticastOptionSender {
     static void Main() {
 
         Thread receiver = new Thread(ReceiverThread.run);
-        Thread sender = new Thread(SenderThread.run);
-        sender.Start();
-        receiver.Start();
+/*        Thread sender = new Thread(SenderThread.run);
+*//*        sender.Start();
+*/        receiver.Start();
     }
 }

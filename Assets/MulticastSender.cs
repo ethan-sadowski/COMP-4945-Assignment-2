@@ -47,14 +47,15 @@ namespace MulticastSend
 
                 Console.WriteLine(snakeInfo);
                 Debug.Log(snakeInfo);
+                Debug.Log(snakeInfo.Length);
                 mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
-/*                while (!done)
-                {
-                    s = Console.ReadLine();
-                    Debug.Log(s);
-                    mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(s), endPoint);
-                }*/
+                /*                while (!done)
+                                {
 
+                                }*/
+                /*s = Console.ReadLine();
+                Debug.Log(s);
+                mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(s), endPoint);*/
 
             }
             catch (Exception e)
