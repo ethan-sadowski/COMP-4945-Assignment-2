@@ -3,112 +3,147 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SnakeBehaviour;
+using MulticastSend;
+using System;
 
-public class SnakeMovement : MonoBehaviour
+
+namespace SnakeMovementController
 {
-    List<GameObject> snakes;
-    float movementTimer;
-    float movementTimerLimit = 0.15f;
-    // Start is called before the first frame update
-    void Start()
+    public class SnakeMovement : MonoBehaviour
     {
-        movementTimer = movementTimerLimit;
-        getSnakes();
-    }
+        List<GameObject> snakes;
+        Guid nativeSnakeId;
 
-    // Update is called once per frame
-    void Update()
-    {
-        moveSnakes();
-    }
-
-
-    void getSnakes()
-    {
-        snakes = new List<GameObject>();
-        Scene scene = SceneManager.GetSceneByName("SampleScene");
-        GameObject[] sceneObjects = scene.GetRootGameObjects();
-        foreach (GameObject obj in sceneObjects)
+        // Start is called before the first frame update
+        void Start()
         {
-            if (obj.GetComponent("SnakeBehaviour.Snake") != null)
+            getSnakes();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            moveNativeSnake();
+        }
+
+        public void addSnake(GameObject snake)
+        {
+            Debug.Log(snake);
+            this.snakes.Add(snake);
+        }
+
+        public void setNativeSnakeId(Guid id)
+        {
+            this.nativeSnakeId = id;
+        }
+
+        void getSnakes()
+        {
+            snakes = new List<GameObject>();
+            Scene scene = SceneManager.GetSceneByName("SampleScene");
+            GameObject[] sceneObjects = scene.GetRootGameObjects();
+            foreach (GameObject obj in sceneObjects)
             {
-                snakes.Add(obj);
+                if (obj.GetComponent("SnakeBehaviour.Snake") != null)
+                {
+                    snakes.Add(obj);
+                }
             }
         }
-    }
 
-    void moveSnakes()
-    {
-        if (executeMovement())
+        public bool checkIfSnakeExists(Guid id)
         {
-            foreach (GameObject snakeObj in this.snakes)
+            foreach (GameObject snake in this.snakes)
             {
-                Snake snake = snakeObj.GetComponent<Snake>();
-                string direction = snake.getDirection();
-                Transform snakeTransform = snakeObj.GetComponent<Transform>();
-                float xPosition = snakeTransform.position.x;
-                float yPosition = snakeTransform.position.y;
-                snake.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
-                if (direction == "up")
+                if (snake.GetComponent<Snake>().getId() == id)
                 {
-                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
+                    return true;
                 }
-
-                if (direction == "down")
-                {
-                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition - 1));
-                }
-
-                if (direction == "left")
-                {
-                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition - 1, yPosition));
-                }
-
-                if (direction == "right")
-                {
-                    snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
-                }
-                snake.moveBody();
-                snake.enableTurning();
             }
+            return false;
         }
-    }
 
-    bool executeMovement()
-    {
-        movementTimer += Time.deltaTime;
-        if (movementTimer >= movementTimerLimit)
+        public GameObject getSnakeById(Guid id)
         {
-            movementTimer -= movementTimerLimit;
-            return true;
+            Scene scene = SceneManager.GetSceneByName("SampleScene");
+            GameObject[] sceneObjects = scene.GetRootGameObjects();
+            foreach (GameObject obj in sceneObjects)
+            {
+                if (obj.GetComponent("SnakeBehaviour.Snake") != null)
+                {
+                    if (obj.GetComponent<Snake>().getId() == id)
+                    {
+                        return obj;
+                    }
+                }
+            }
+            return null;
         }
-        return false;
-    }
 
-    Vector2 calculateNextLocation(Vector2 vectorInput)
-    {
-        if (vectorInput.x > 44)
+        public void updateSnakeLocation(Guid id, List<Vector2> snakeLocations)
         {
-            return new Vector2(-44, vectorInput.y);
+            GameObject snakeObj = getSnakeById(id);
+            Transform snakeTransform = snakeObj.GetComponent<Transform>();
+            snakeTransform.position = snakeLocations[0];
         }
 
-        if (vectorInput.x < -44)
+        void moveNativeSnake()
         {
-            return new Vector2(44, vectorInput.y);
+            GameObject snakeObj = getSnakeById(nativeSnakeId);
+            Snake snake = snakeObj.GetComponent<Snake>();
+            string direction = snake.getDirection();
+            Transform snakeTransform = snakeObj.GetComponent<Transform>();
+            float xPosition = snakeTransform.position.x;
+            float yPosition = snakeTransform.position.y;
+            snake.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
+            if (direction == "up")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
+            }
+
+            if (direction == "down")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition - 1));
+            }
+
+            if (direction == "left")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition - 1, yPosition));
+            }
+
+            if (direction == "right")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
+            }
+            snake.moveBody();
+            snake.enableTurning();
         }
 
-        if (vectorInput.y < -24.5)
+        Vector2 calculateNextLocation(Vector2 vectorInput)
         {
-            return new Vector2(vectorInput.x, (float) 24.5);
+            if (vectorInput.x > 44)
+            {
+                return new Vector2(-44, vectorInput.y);
+            }
+
+            if (vectorInput.x < -44)
+            {
+                return new Vector2(44, vectorInput.y);
+            }
+
+            if (vectorInput.y < -24.5)
+            {
+                return new Vector2(vectorInput.x, (float)24.5);
+            }
+
+            if (vectorInput.y > 24.5)
+            {
+                return new Vector2(vectorInput.x, (float)-24.5);
+            }
+
+            return vectorInput;
+
         }
-
-        if (vectorInput.y > 24.5)
-        {
-            return new Vector2(vectorInput.x, (float) -24.5);
-        }
-
-        return vectorInput;
-
     }
 }
 
