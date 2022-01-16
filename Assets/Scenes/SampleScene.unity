@@ -331,10 +331,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   food: {fileID: 6575528452697472015, guid: 0453028f33e50194591ee7a66d965213, type: 3}
-  borderTop: {fileID: 0}
-  borderLeft: {fileID: 0}
-  borderRight: {fileID: 0}
-  borderBottom: {fileID: 0}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -404,7 +400,7 @@ GameObject:
   - component: {fileID: 717302363}
   m_Layer: 0
   m_Name: SnakeBody
-  m_TagString: Untagged
+  m_TagString: SnakeBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -21,7 +21,6 @@ namespace SnakeBehaviour
         void Start()
         {
             canTurn = true;
-            ate = false;
         }
 
         public string getDirection()
@@ -55,7 +54,14 @@ namespace SnakeBehaviour
             GameObject newBodyPiece;
             for (int i = 0; i < 3; i++)
             {
-                newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject;
+                newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject; 
+
+                // add physics to body
+                newBodyPiece.AddComponent<Rigidbody2D>();
+                newBodyPiece.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+                newBodyPiece.AddComponent<BoxCollider2D>();
+                newBodyPiece.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
+
                 newBodyPiece.SetActive(true);
                 this.snakeBody.Add(newBodyPiece);
             }
@@ -111,15 +117,26 @@ namespace SnakeBehaviour
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.name.StartsWith("Food"))
+            if (collision.gameObject.tag == "Food")
             {
-                ate = true;
-
+                // Eats the food
                 Destroy(collision.gameObject);
+
+                // Adds a new section to the snake body
+                GameObject newBodyPiece;
+
+                newBodyPiece = Instantiate(this.snakeBodyPrefab) as GameObject;
+                newBodyPiece.AddComponent<Rigidbody2D>();
+                newBodyPiece.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+                newBodyPiece.AddComponent<BoxCollider2D>();
+                newBodyPiece.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
+                newBodyPiece.SetActive(true);
+                this.snakeBody.Add(newBodyPiece);
             }
-            else
+            else // not working
             {
-                //u lose
+                // Snake body set to 0
+                this.snakeBody.Clear(); 
             }
         }
     }

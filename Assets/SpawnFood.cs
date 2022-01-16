@@ -6,10 +6,6 @@ public class SpawnFood : MonoBehaviour
 {
     public GameObject food;
     // Start is called before the first frame update
-    public Transform borderTop;
-    public Transform borderLeft;
-    public Transform borderRight;
-    public Transform borderBottom;
 
     void Start()
     {
