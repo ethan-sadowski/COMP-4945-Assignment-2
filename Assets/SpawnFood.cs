@@ -23,6 +23,6 @@ public class SpawnFood : MonoBehaviour
 
         int y = (int)Random.Range(-25, 25);
 
-        Instantiate(food, new Vector2(x, y), Quaternion.identity);
+        Instantiate(food, new Vector2(x, (float) (y - 0.5)), Quaternion.identity);
     }
 }

@@ -34,12 +34,14 @@ namespace SnakeCreation {
             newSnake.AddComponent<SpriteRenderer>();
             newSnake.GetComponent<SpriteRenderer>().color = snakeHeadPrefab.GetComponent<SpriteRenderer>().color;
             newSnake.GetComponent<SpriteRenderer>().sprite = snakeHeadPrefab.GetComponent<SpriteRenderer>().sprite;
+            newSnake.AddComponent<Rigidbody2D>();
+            newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+            newSnake.AddComponent<BoxCollider2D>();
+            newSnake.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
             newSnake.GetComponent<Snake>().snakeBodyPrefab = snakeBodyPrefab;
-            Debug.Log(id);
             newSnake.GetComponent<Snake>().setId(id);
             newSnake.GetComponent<Transform>().position = snakeCoordinates[0];
             newSnake.SetActive(true);
-            Debug.Log(newSnake);
             return newSnake;
         }
 
