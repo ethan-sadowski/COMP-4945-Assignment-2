@@ -12,21 +12,18 @@ namespace SnakeMovementController
     public class SnakeMovement : MonoBehaviour
     {
         List<GameObject> snakes;
-        float movementTimer;
-        float movementTimerLimit = 0.15f;
         Guid nativeSnakeId;
 
         // Start is called before the first frame update
         void Start()
         {
-            movementTimer = movementTimerLimit;
             getSnakes();
         }
 
         // Update is called once per frame
         void Update()
         {
-            moveSnakes();
+            moveNativeSnake();
         }
 
         public void addSnake(GameObject snake)
@@ -83,52 +80,43 @@ namespace SnakeMovementController
             return null;
         }
 
-        void moveSnakes()
+        public void updateSnakeLocation(Guid id, List<Vector2> snakeLocations)
         {
-            if (executeMovement())
-            {
-                foreach (GameObject snakeObj in this.snakes)
-                {
-                    Snake snake = snakeObj.GetComponent<Snake>();
-                    string direction = snake.getDirection();
-                    Transform snakeTransform = snakeObj.GetComponent<Transform>();
-                    float xPosition = snakeTransform.position.x;
-                    float yPosition = snakeTransform.position.y;
-                    snake.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
-                    if (direction == "up")
-                    {
-                        snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
-                    }
-
-                    if (direction == "down")
-                    {
-                        snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition - 1));
-                    }
-
-                    if (direction == "left")
-                    {
-                        snakeTransform.position = calculateNextLocation(new Vector2(xPosition - 1, yPosition));
-                    }
-
-                    if (direction == "right")
-                    {
-                        snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
-                    }
-                    snake.moveBody();
-                    snake.enableTurning();
-                }
-            }
+            GameObject snakeObj = getSnakeById(id);
+            Transform snakeTransform = snakeObj.GetComponent<Transform>();
+            snakeTransform.position = snakeLocations[0];
         }
 
-        bool executeMovement()
+        void moveNativeSnake()
         {
-            movementTimer += Time.deltaTime;
-            if (movementTimer >= movementTimerLimit)
+            GameObject snakeObj = getSnakeById(nativeSnakeId);
+            Snake snake = snakeObj.GetComponent<Snake>();
+            string direction = snake.getDirection();
+            Transform snakeTransform = snakeObj.GetComponent<Transform>();
+            float xPosition = snakeTransform.position.x;
+            float yPosition = snakeTransform.position.y;
+            snake.updatePreviousHeadLocation(new Vector2(xPosition, yPosition));
+            if (direction == "up")
             {
-                movementTimer -= movementTimerLimit;
-                return true;
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition + 1));
             }
-            return false;
+
+            if (direction == "down")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition, yPosition - 1));
+            }
+
+            if (direction == "left")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition - 1, yPosition));
+            }
+
+            if (direction == "right")
+            {
+                snakeTransform.position = calculateNextLocation(new Vector2(xPosition + 1, yPosition));
+            }
+            snake.moveBody();
+            snake.enableTurning();
         }
 
         Vector2 calculateNextLocation(Vector2 vectorInput)

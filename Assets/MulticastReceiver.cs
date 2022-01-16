@@ -45,6 +45,11 @@ namespace MulticastReceive
 
         }
 
+        public void setId(Guid id)
+        {
+            this.id = id;
+        }
+
         // Update is called once per frame
         void Update()
         {
@@ -75,16 +80,26 @@ namespace MulticastReceive
                 Guid parsedUid = Guid.Parse(uid);
                 // If the snake is a new connection create a new snake
                 bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
+
+                // TODO refactor this to create a list of all the snake's coordinates
+                List<Vector2> coordinateList = new List<Vector2>();
+                coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
+
                 if (isNewSnake)
                 {
-                    // TODO refactor this to create a list of all the snake's coordinates
-                    List<Vector2> coordinateList = new List<Vector2>();
-                    coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
+                    
 
                     Debug.Log(snakeInfo);
                     Debug.Log("new");
                     GameObject newSnake = snakeCreator.instantiateSnake(parsedUid, coordinateList);
                     snakeMovement.addSnake(newSnake);
+                }
+                else if (uid != this.id.ToString())
+                {
+                    Debug.Log(snakeInfo);
+
+
+                    snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
                 }
 
             }

@@ -26,12 +26,16 @@ namespace UDPController
         // Start is called before the first frame update
         void Start()
         {
+            Application.targetFrameRate = 20;
             Debug.Log("start");
             Vector2 startingCoordinate = snakeCreator.generateStartingLocation();
+
             List<Vector2> startingList = new List<Vector2>();
             startingList.Add(startingCoordinate);
             GameObject playerSnake = snakeCreator.instantiateSnake(id, startingList);
             playerSnake.GetComponent<Snake>().createBody();
+
+            receiver.setId(id);
             snakeMovement.setNativeSnakeId(id);
         }
 

@@ -35,6 +35,17 @@ public class SenderThread {
     static int mcastPort;
     static Socket mcastSocket;
 
+    // Functions to help with testing, should allow this client to send a movement-like signal
+
+    static int calculateNextXCoord(int x)
+    {
+        if (x - 1 < -44)
+        {
+            return 44;
+        }
+        return x - 1;
+    }
+
     public static void run() {
         // Initialize the multicast address group and multicast port.
         // Both address and port are selected from the allowed sets as
@@ -43,26 +54,34 @@ public class SenderThread {
         mcastAddress = IPAddress.Parse("230.0.0.1");
         mcastPort = 11000;
         IPEndPoint endPoint;
-
+        
         try {
-            mcastSocket = new Socket(AddressFamily.InterNetwork,
+
+            int xCoord = -15;
+            float yCoord = (float)12.5;
+            bool run = true;
+            while (run)
+            {
+                mcastSocket = new Socket(AddressFamily.InterNetwork,
                            SocketType.Dgram,
                            ProtocolType.Udp);
 
-            //Send multicast packets to the listener.
-            endPoint = new IPEndPoint(mcastAddress, mcastPort);
+                //Send multicast packets to the listener.
+                endPoint = new IPEndPoint(mcastAddress, mcastPort);
 
-            String s;
-            bool done = false;
-            string snakeInfo = "xcoordinate: -15" + "---end-x---\n";
-            // Stringify y coordinate of the snake
-            snakeInfo += "ycoordinate: 12.5" + "---end-y---";
-            // Stringify UID of the snake
-            snakeInfo += "uid: " + "baec3797-4509-4be0-a52d-6dccefa2f7ab" + "---end-uid---";
+                string snakeInfo = "xcoordinate: " + xCoord + "---end-x---\n";
+                // Stringify y coordinate of the snake
+                snakeInfo += "ycoordinate: " + yCoord + "---end-y---";
+                // Stringify UID of the snake
+                snakeInfo += "uid: " + "baec3797-4509-4be0-a52d-6dccefa2f7ab" + "---end-uid---";
 
-            Console.WriteLine(snakeInfo);
+                Console.WriteLine(snakeInfo);
 
-            mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
+                mcastSocket.SendTo(ASCIIEncoding.ASCII.GetBytes(snakeInfo), endPoint);
+
+                xCoord = calculateNextXCoord(xCoord);
+            }
+            
 
 
         } catch(Exception e) {
@@ -135,7 +154,6 @@ public class ReceiverThread {
                 int uidStart = snakeInfo.IndexOf("uid: ") + 5;
                 int uidEnd = snakeInfo.IndexOf("---end-uid---");
                 string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
-                Console.WriteLine(snakeInfo);
                 // Instantiate 2 demo Snakes and add them to the snakes List
                 /*List<Snake> snakes = new List<Snake>(); // Don't instantiate this every time in final product. Bring out of while loop
                 Snake s1 = new Snake(0, 0, "s1");
