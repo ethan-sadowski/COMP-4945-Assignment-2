@@ -17,7 +17,26 @@ namespace SnakeCreation {
         void Start()
         {
 
-        }
+
+
+    public void instantiateSnake()
+    {
+        GameObject newSnake = new GameObject("Snake " + snakeCount.ToString());
+        newSnake.AddComponent<Snake>();
+        newSnake.AddComponent<SpriteRenderer>();
+        newSnake.AddComponent<BoxCollider2D>();
+        newSnake.AddComponent<Rigidbody2D>();
+        newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+
+        newSnake.GetComponent<BoxCollider2D>().size = new Vector2(1.0f, 1.0f);
+
+        newSnake.GetComponent<SpriteRenderer>().color = snakeHeadPrefab.GetComponent<SpriteRenderer>().color;
+        newSnake.GetComponent<SpriteRenderer>().sprite = snakeHeadPrefab.GetComponent<SpriteRenderer>().sprite;
+        newSnake.GetComponent<Snake>().snakeBodyPrefab = snakeBodyPrefab;
+        newSnake.GetComponent<Transform>().position = generateStartingLocation();
+        newSnake.SetActive(true);
+        snakeCount++;
+    }
 
         public Vector2 generateStartingLocation()
         {

@@ -17,10 +17,12 @@ namespace SnakeBehaviour
         private Vector2 previousHeadLocation;
         private bool canTurn;
 
+        private bool ate;
         void Start()
         {
             canTurn = true;
-            
+            ate = false;
+            createBody(this.snakeBodyPrefab);
         }
 
         public string getDirection()
@@ -106,6 +108,21 @@ namespace SnakeBehaviour
             {
                 this.direction = "right";
                 canTurn = false;
+            }
+        }
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            Debug.Log("test1");
+            if (collision.name.StartsWith("Food"))
+            {
+                ate = true;
+                Debug.Log("test");
+
+                Destroy(collision.gameObject);
+            }
+            else
+            {
+                //u lose
             }
         }
     }
