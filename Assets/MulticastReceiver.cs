@@ -27,6 +27,9 @@ namespace MulticastReceive
         EndPoint localEP;
         IPEndPoint groupEP;
         EndPoint remoteEP;
+        Thread socketThread;
+        bool socketThreadRunning;
+        Tuple<Guid, List<Vector2>> newSnakeData;
 
         // Start is called before the first frame update
         void Start()
@@ -42,7 +45,9 @@ namespace MulticastReceive
             mcastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, mcastOption);
             groupEP = new IPEndPoint(mcastAddress, mcastPort);
             remoteEP = (EndPoint)new IPEndPoint(IPAddress.Any, 0);
-
+            socketThread = new Thread(listen);
+            socketThreadRunning = true;
+            socketThread.Start();
         }
 
         public void setId(Guid id)
@@ -50,62 +55,90 @@ namespace MulticastReceive
             this.id = id;
         }
 
+        void listen()
+        {
+            while (socketThreadRunning)
+            {
+                try
+                {
+
+                    byte[] bytes = new Byte[130];
+
+                    mcastSocket.ReceiveFrom(bytes, ref remoteEP);
+                    string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
+                    //TODO: Add a conditional check to see what type of message the broadcast is (snake movement / apple locations).
+
+                    // Parse x coordinate of the snake
+                    int xStart = snakeInfo.IndexOf("xcoordinate: ") + 13;
+                    int xEnd = snakeInfo.IndexOf("---end-x---");
+                    int xcoordinate = int.Parse(snakeInfo.Substring(xStart, xEnd - xStart));
+
+                    // Parse y coordinate of the snake
+                    int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
+                    int yEnd = snakeInfo.IndexOf("---end-y---");
+                    float ycoordinate = float.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
+
+                    // Parse UID of the snake
+                    int uidStart = snakeInfo.IndexOf("uid: ") + 5;
+                    int uidEnd = snakeInfo.IndexOf("---end-uid---");
+                    string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
+
+                    Guid parsedUid = Guid.Parse(uid);
+                    // If the snake is a new connection create a new snake
+                    bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
+
+                    // TODO refactor this to create a list of all the snake's coordinates
+                    List<Vector2> coordinateList = new List<Vector2>();
+                    coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
+
+                    if (isNewSnake)
+                    {
+
+
+                        Debug.Log(snakeInfo);
+                        Debug.Log("new");
+
+                        newSnakeData = new Tuple<Guid, List<Vector2>>(parsedUid, coordinateList);
+                        socketThreadRunning = false;
+                        Debug.Log(newSnakeData);
+                        Debug.Log(socketThreadRunning);
+
+                    }
+                    else if (uid != this.id.ToString())
+                    {
+
+
+                        snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                    Console.WriteLine(e.ToString());
+                    socketThread.Abort();
+                    mcastSocket.Close();
+                }
+                
+            }
+            Debug.Log("test");
+            Debug.Log(socketThreadRunning);
+            mcastSocket.Close();
+            socketThread.Abort();
+
+        }
+
         // Update is called once per frame
         void Update()
         {
-            try
+            if (!socketThreadRunning)
             {
-
-                byte[] bytes = new Byte[130];
-
-                mcastSocket.ReceiveFrom(bytes, ref remoteEP);
-                string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
-                //TODO: Add a conditional check to see what type of message the broadcast is (snake movement / apple locations).
-
-                // Parse x coordinate of the snake
-                int xStart = snakeInfo.IndexOf("xcoordinate: ") + 13;
-                int xEnd = snakeInfo.IndexOf("---end-x---");
-                int xcoordinate = int.Parse(snakeInfo.Substring(xStart, xEnd - xStart));
-
-                // Parse y coordinate of the snake
-                int yStart = snakeInfo.IndexOf("ycoordinate: ") + 13;
-                int yEnd = snakeInfo.IndexOf("---end-y---");
-                float ycoordinate = float.Parse(snakeInfo.Substring(yStart, yEnd - yStart));
-
-                // Parse UID of the snake
-                int uidStart = snakeInfo.IndexOf("uid: ") + 5;
-                int uidEnd = snakeInfo.IndexOf("---end-uid---");
-                string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
-
-                Guid parsedUid = Guid.Parse(uid);
-                // If the snake is a new connection create a new snake
-                bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
-
-                // TODO refactor this to create a list of all the snake's coordinates
-                List<Vector2> coordinateList = new List<Vector2>();
-                coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
-
-                if (isNewSnake)
-                {
-                    
-
-                    Debug.Log(snakeInfo);
-                    Debug.Log("new");
-                    GameObject newSnake = snakeCreator.instantiateSnake(parsedUid, coordinateList);
-                    snakeMovement.addSnake(newSnake);
-                }
-                else if (uid != this.id.ToString())
-                {
-                    Debug.Log(snakeInfo);
-
-
-                    snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
-                }
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+                Debug.Log("rerun?");
+                GameObject newSnake = snakeCreator.instantiateSnake(newSnakeData.Item1, newSnakeData.Item2);
+                snakeMovement.addSnake(newSnake);
+                socketThread = new Thread(listen);
+                socketThreadRunning = true;
+                socketThread.Start();
             }
         }
 

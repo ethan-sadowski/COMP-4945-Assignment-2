@@ -11,12 +11,13 @@ namespace SnakeMovementController
 {
     public class SnakeMovement : MonoBehaviour
     {
-        List<GameObject> snakes;
+        Dictionary<string, GameObject> snakes;
         Guid nativeSnakeId;
 
         // Start is called before the first frame update
         void Start()
         {
+            
             getSnakes();
         }
 
@@ -29,7 +30,9 @@ namespace SnakeMovementController
         public void addSnake(GameObject snake)
         {
             Debug.Log(snake);
-            this.snakes.Add(snake);
+            string id = snake.GetComponent<Snake>().getId().ToString();
+            Debug.Log(id);
+            this.snakes.Add(id, snake);
         }
 
         public void setNativeSnakeId(Guid id)
@@ -39,28 +42,22 @@ namespace SnakeMovementController
 
         void getSnakes()
         {
-            snakes = new List<GameObject>();
+            snakes = new Dictionary<string, GameObject>();
             Scene scene = SceneManager.GetSceneByName("SampleScene");
             GameObject[] sceneObjects = scene.GetRootGameObjects();
             foreach (GameObject obj in sceneObjects)
             {
                 if (obj.GetComponent("SnakeBehaviour.Snake") != null)
                 {
-                    snakes.Add(obj);
+                    string id = obj.GetComponent<Snake>().getId().ToString();
+                    snakes.Add(id, obj);
                 }
             }
         }
 
         public bool checkIfSnakeExists(Guid id)
         {
-            foreach (GameObject snake in this.snakes)
-            {
-                if (snake.GetComponent<Snake>().getId() == id)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return this.snakes.ContainsKey(id.ToString());
         }
 
         public GameObject getSnakeById(Guid id)
