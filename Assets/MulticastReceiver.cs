@@ -30,7 +30,8 @@ namespace MulticastReceive
         Thread socketThread;
         bool socketThreadRunning;
         Tuple<Guid, List<Vector2>> newSnakeData;
-
+        List<Vector2> coordinateList;
+        Guid parsedUid;
         // Start is called before the first frame update
         void Start()
         {
@@ -83,12 +84,12 @@ namespace MulticastReceive
                     int uidEnd = snakeInfo.IndexOf("---end-uid---");
                     string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
 
-                    Guid parsedUid = Guid.Parse(uid);
+                    parsedUid = Guid.Parse(uid);
                     // If the snake is a new connection create a new snake
                     bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
 
                     // TODO refactor this to create a list of all the snake's coordinates
-                    List<Vector2> coordinateList = new List<Vector2>();
+                    coordinateList = new List<Vector2>();
                     coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
 
                     if (isNewSnake)
@@ -108,7 +109,7 @@ namespace MulticastReceive
                     {
 
 
-                        snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+                        mainThreadUpdate();
                     }
 
                 }
@@ -123,7 +124,6 @@ namespace MulticastReceive
             }
             Debug.Log("test");
             Debug.Log(socketThreadRunning);
-            mcastSocket.Close();
             socketThread.Abort();
 
         }
@@ -145,6 +145,17 @@ namespace MulticastReceive
         ~MulticastReceiver()
         {
             mcastSocket.Close();
+        }
+
+        public IEnumerator functionExecution()
+        {
+            snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+            yield return null;
+        }
+
+        public void mainThreadUpdate()
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(functionExecution());
         }
 
     }
