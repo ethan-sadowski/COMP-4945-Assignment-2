@@ -8,6 +8,7 @@ using SnakeMovementController;
 
 namespace SnakeCreation {
 
+    //Worked on by Ethan Sadowski aand Jimun Jang
     public class SnakeCreator : MonoBehaviour
     {
         public GameObject snakeHeadPrefab;

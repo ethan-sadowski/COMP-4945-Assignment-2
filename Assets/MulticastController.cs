@@ -14,7 +14,8 @@ using SnakeMovementController;
 using SnakeBehaviour;
 
 namespace UDPController
-{
+{    
+    //Worked on By Christopher Spooner, Ethan Sadowski, and Sam Shannon
     public class MulticastController : MonoBehaviour
     {
         public Guid id = System.Guid.NewGuid();

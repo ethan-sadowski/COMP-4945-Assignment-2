@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 
 namespace MulticastSend
 {
+    //Worked on By Christopher Spooner, Ethan Sadowski, and Sam Shannon
     public class MulticastSender : MonoBehaviour
     {
         static IPAddress mcastAddress;
@@ -44,7 +45,6 @@ namespace MulticastSend
 
             mcastSocket.Close();
         }
-
         // Update is called once per frame
         void Update()
         {
