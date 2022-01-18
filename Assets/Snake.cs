@@ -57,8 +57,6 @@ namespace SnakeBehaviour
                 newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject; 
 
                 // add physics to body
-                newBodyPiece.AddComponent<Rigidbody2D>();
-                newBodyPiece.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
                 newBodyPiece.AddComponent<BoxCollider2D>();
                 newBodyPiece.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
 
@@ -80,9 +78,12 @@ namespace SnakeBehaviour
             this.snakeBody[0].GetComponent<Transform>().position = this.previousHeadLocation;
             for (int i = 1; i < this.snakeBody.Count; i++)
             {
-                Vector2 tempLocation = this.snakeBody[i].GetComponent<Transform>().position;
-                this.snakeBody[i].GetComponent<Transform>().position = bodyPlaceHolder;
-                bodyPlaceHolder = tempLocation;
+                if (this.snakeBody[i] != null)
+                {
+                    Vector2 tempLocation = this.snakeBody[i].GetComponent<Transform>().position;
+                    this.snakeBody[i].GetComponent<Transform>().position = bodyPlaceHolder;
+                    bodyPlaceHolder = tempLocation;
+                }
             }
         }
 
@@ -126,17 +127,20 @@ namespace SnakeBehaviour
                 GameObject newBodyPiece;
 
                 newBodyPiece = Instantiate(this.snakeBodyPrefab) as GameObject;
-                newBodyPiece.AddComponent<Rigidbody2D>();
-                newBodyPiece.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
                 newBodyPiece.AddComponent<BoxCollider2D>();
                 newBodyPiece.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
                 newBodyPiece.SetActive(true);
                 this.snakeBody.Add(newBodyPiece);
             }
-            else // not working
+            else
             {
-                // Snake body set to 0
-                this.snakeBody.Clear(); 
+                // Snake body set to 1
+                for (int i = 1; i < this.snakeBody.Count; i++)
+                {
+                    Destroy (snakeBody[i]);
+                }
+                this.snakeBody.RemoveRange(1, this.snakeBody.Count - 1);
+                enableTurning();
             }
         }
     }
