@@ -61,7 +61,7 @@ namespace SnakeCreation {
         public GameObject createSnakePart(Vector2 snakeCoordinates)
         {
             Debug.Log("making part");
-            GameObject newSnake = new GameObject();
+            GameObject newSnake = Instantiate(snakeBodyPrefab);
             newSnake.AddComponent<SpriteRenderer>();
             newSnake.GetComponent<SpriteRenderer>().color = snakeBodyPrefab.GetComponent<SpriteRenderer>().color;
             newSnake.GetComponent<SpriteRenderer>().sprite = snakeBodyPrefab.GetComponent<SpriteRenderer>().sprite;

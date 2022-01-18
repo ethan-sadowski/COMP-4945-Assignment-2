@@ -142,6 +142,7 @@ namespace MulticastReceive
             if (!socketThreadRunning)
             {
                 GameObject newSnake = snakeCreator.instantiateSnake(newSnakeData.Item1, newSnakeData.Item2);
+                newSnake.GetComponent<BoxCollider2D>().isTrigger = false;
                 snakeMovement.addSnake(newSnake);
                 snakeCreator.instantiateBody(newSnake, newSnakeData.Item1, newSnakeData.Item2);
                 socketThread = new Thread(listen);
