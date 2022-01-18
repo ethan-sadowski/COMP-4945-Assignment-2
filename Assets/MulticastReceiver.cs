@@ -169,7 +169,8 @@ namespace MulticastReceive
             }
             if (bodySize > coordinateList.Count)
             {
-                snakeMovement.removeSnakeParts(parsedUid, coordinateList.Count - bodySize);
+
+                snakeMovement.removeSnakeParts(parsedUid, bodySize - coordinateList.Count);
             }
             snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
             yield return null;

@@ -39,12 +39,15 @@ namespace SnakeMovementController
 
         public void removeSnakeParts(Guid snakeId, int count)
         {
-            List<GameObject> bodyToRemoveFrom = snakeBodies[snakeId.ToString()];
-            int bodyLength = bodyToRemoveFrom.Count;
-            for (int i = bodyLength - 1; i < count; i --)
+            Debug.Log(count);
+            
+            for (int i = count; i > 0; i--)
             {
-                GameObject removedPart = bodyToRemoveFrom[i - 1];
-                bodyToRemoveFrom.RemoveAt(i - 1);
+                List<GameObject> bodyToRemoveFrom = snakeBodies[snakeId.ToString()];
+                int bodyLength = bodyToRemoveFrom.Count;
+                GameObject removedPart = bodyToRemoveFrom[bodyLength - 1];
+                Debug.Log(removedPart);
+                bodyToRemoveFrom.RemoveAt(bodyLength - 1);
                 Destroy(removedPart);
 
             }
@@ -111,7 +114,7 @@ namespace SnakeMovementController
             Transform snakeTransform = snakeObj.GetComponent<Transform>();
             snakeTransform.position = snakeLocations[0];
             List<GameObject> body = snakeBodies[id.ToString()];
-            for (int i = 1; i < snakeLocations.Count; i++)
+            for (int i = 0; i < snakeLocations.Count; i++)
             {
                 body[i].GetComponent<Transform>().position = snakeLocations[i];
             }
