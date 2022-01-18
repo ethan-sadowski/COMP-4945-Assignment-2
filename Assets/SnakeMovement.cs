@@ -12,11 +12,13 @@ namespace SnakeMovementController
     public class SnakeMovement : MonoBehaviour
     {
         Dictionary<string, GameObject> snakes;
+        Dictionary<string, List<GameObject>> snakeBodies;
         Guid nativeSnakeId;
 
         // Start is called before the first frame update
         void Start()
         {
+            snakeBodies = new Dictionary<string, List<GameObject>>();
             getSnakes();
         }
 
@@ -30,8 +32,26 @@ namespace SnakeMovementController
         {
             Debug.Log(snake);
             string id = snake.GetComponent<Snake>().getId().ToString();
-            Debug.Log(id);
             this.snakes.Add(id, snake);
+            List<GameObject> newBody = new List<GameObject>();
+            this.snakeBodies.Add(id, newBody);
+        }
+
+        public void removeSnakeParts(Guid snakeId, int count)
+        {
+            for (int i = 0; i < count; i ++)
+            {
+                List<GameObject> bodyToRemoveFrom = snakeBodies[snakeId.ToString()];
+                GameObject removedPart = bodyToRemoveFrom[bodyToRemoveFrom.Count - 1];
+                Destroy(removedPart);
+                bodyToRemoveFrom.RemoveAt(bodyToRemoveFrom.Count - 1);
+            }
+        }
+
+        public void addSnakePart(Guid snakeId, GameObject bodyPart)
+        {
+            List<GameObject> bodyList = this.snakeBodies[snakeId.ToString()];
+            bodyList.Add(bodyPart);
         }
 
         public void setNativeSnakeId(Guid id)
@@ -59,6 +79,11 @@ namespace SnakeMovementController
             return this.snakes.ContainsKey(id.ToString());
         }
 
+        public int getBodySizeById(Guid id)
+        {
+            return this.snakeBodies[id.ToString()].Count;
+        }
+
         public GameObject getSnakeById(Guid id)
         {
             Scene scene = SceneManager.GetSceneByName("SampleScene");
@@ -76,11 +101,18 @@ namespace SnakeMovementController
             return null;
         }
 
+
+
         public void updateSnakeLocation(Guid id, List<Vector2> snakeLocations)
         {
             GameObject snakeObj = getSnakeById(id);
             Transform snakeTransform = snakeObj.GetComponent<Transform>();
             snakeTransform.position = snakeLocations[0];
+            List<GameObject> body = snakeBodies[id.ToString()];
+            for (int i = 1; i < snakeLocations.Count; i++)
+            {
+                body[i].GetComponent<Transform>().position = snakeLocations[i];
+            }
         }
 
         void moveNativeSnake()

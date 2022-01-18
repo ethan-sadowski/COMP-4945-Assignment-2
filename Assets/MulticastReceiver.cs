@@ -63,7 +63,7 @@ namespace MulticastReceive
                 try
                 {
 
-                    byte[] bytes = new Byte[1000];
+                    byte[] bytes = new Byte[2000];
 
                     //Debug.Log("AT THE TOP");
 
@@ -103,23 +103,20 @@ namespace MulticastReceive
                     coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
 
                     string[] bodyArr = bodyStr.Split(' ');
+                    Debug.Log(bodyStr);
                     //Debug.Log("BODY ARR LENGTH: " + bodyArr.Length);
-                    for (int i = 0; i < bodyArr.Length - 1; i += 2)
+                    for (int i = 0; i < bodyArr.Length - 2; i += 2)
                     {
-                        //coordinateList.Add(new Vector2(float.Parse(bodyArr[i]), float.Parse(bodyArr[i + 1])));
-                        //Debug.Log(coordinateList[i+1].x);
-                       // Debug.Log(coordinateList[i + 1].y);
+                        coordinateList.Add(new Vector2(float.Parse(bodyArr[i]), float.Parse(bodyArr[i + 1])));
                     }
 
                     if (isNewSnake && parsedUid != this.id)
                     {
                         //Debug.Log(snakeInfo);
-                        Debug.Log("new");
 
                         newSnakeData = new Tuple<Guid, List<Vector2>>(parsedUid, coordinateList);
                         socketThreadRunning = false;
-                        Debug.Log(newSnakeData);
-                        Debug.Log(socketThreadRunning);
+
                     }
                     else if (uid != this.id.ToString())
                     {
@@ -129,7 +126,6 @@ namespace MulticastReceive
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("CAUGHT ERROR");
                     Debug.Log(e);
                     Console.WriteLine(e.ToString());
                     socketThread.Abort();
@@ -137,8 +133,6 @@ namespace MulticastReceive
                 }
 
             }
-            //Debug.Log("test");
-            Debug.Log(socketThreadRunning);
             socketThread.Abort();
 
         }
@@ -148,9 +142,9 @@ namespace MulticastReceive
         {
             if (!socketThreadRunning)
             {
-                Debug.Log("rerun?");
                 GameObject newSnake = snakeCreator.instantiateSnake(newSnakeData.Item1, newSnakeData.Item2);
                 snakeMovement.addSnake(newSnake);
+                snakeCreator.instantiateBody(newSnake, newSnakeData.Item1, newSnakeData.Item2);
                 socketThread = new Thread(listen);
                 socketThreadRunning = true;
                 socketThread.Start();
@@ -164,11 +158,21 @@ namespace MulticastReceive
 
         public IEnumerator functionExecution()
         {
-            if (parsedUid != this.id)
+            Debug.Log(parsedUid);
+            int bodySize = snakeMovement.getBodySizeById(parsedUid);
+            if (bodySize < coordinateList.Count)
             {
-                Debug.Log(parsedUid);
-                snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+                for (int i = bodySize - 1; i < coordinateList.Count; i++)
+                {
+                    GameObject newSnakePart = snakeCreator.createSnakePart(coordinateList[i]);
+                    snakeMovement.addSnakePart(parsedUid, newSnakePart);
+                }
             }
+            if (bodySize > coordinateList.Count)
+            {
+                snakeMovement.removeSnakeParts(parsedUid, coordinateList.Count - bodySize);
+            }
+            snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
             yield return null;
         }
 

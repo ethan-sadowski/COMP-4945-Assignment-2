@@ -45,18 +45,22 @@ namespace SnakeCreation {
             return newSnake;
         }
 
-        private void instantiateBody(List<Vector2> snakeCoordinateList)
+        public void instantiateBody(GameObject snakeHead, Guid snakeId, List<Vector2> snakeCoordinateList)
         {
-            //GameObject snakeHead = 
-            //for (int i = 1; i < snakeCoordinateList.Count; i++)
-            //{
-                //createSnakePart(snakeCoordinateList[i]);
-            //}
+            Debug.Log(snakeCoordinateList.Count);
+            Debug.Log(snakeId);
+            Debug.Log("making body");
+            for (int i = 0; i < snakeCoordinateList.Count; i++)
+            {
+                GameObject newPart = createSnakePart(snakeCoordinateList[i]);
+                snakeMovement.addSnakePart(snakeId, newPart);
+            }
         }
 
-        public void createSnakePart(Vector2 snakeCoordinates, GameObject snakeHead)
+        public GameObject createSnakePart(Vector2 snakeCoordinates)
         {
-/*            GameObject newSnake = new GameObject();
+            Debug.Log("making part");
+            GameObject newSnake = new GameObject();
             newSnake.AddComponent<SpriteRenderer>();
             newSnake.GetComponent<SpriteRenderer>().color = snakeBodyPrefab.GetComponent<SpriteRenderer>().color;
             newSnake.GetComponent<SpriteRenderer>().sprite = snakeBodyPrefab.GetComponent<SpriteRenderer>().sprite;
@@ -64,11 +68,9 @@ namespace SnakeCreation {
             newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
             newSnake.AddComponent<BoxCollider2D>();
             newSnake.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
-
             newSnake.GetComponent<Transform>().position = snakeCoordinates;
             newSnake.SetActive(true);
-
-            return newSnake;*/
+            return newSnake;
         }
 
 
