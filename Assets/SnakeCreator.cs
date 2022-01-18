@@ -62,13 +62,6 @@ namespace SnakeCreation {
         {
             Debug.Log("making part");
             GameObject newSnake = Instantiate(snakeBodyPrefab);
-            newSnake.AddComponent<SpriteRenderer>();
-            newSnake.GetComponent<SpriteRenderer>().color = snakeBodyPrefab.GetComponent<SpriteRenderer>().color;
-            newSnake.GetComponent<SpriteRenderer>().sprite = snakeBodyPrefab.GetComponent<SpriteRenderer>().sprite;
-            newSnake.AddComponent<Rigidbody2D>();
-            newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-            newSnake.AddComponent<BoxCollider2D>();
-            newSnake.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
             newSnake.GetComponent<Transform>().position = snakeCoordinates;
             newSnake.SetActive(true);
             return newSnake;

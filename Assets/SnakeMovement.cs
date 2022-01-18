@@ -39,12 +39,14 @@ namespace SnakeMovementController
 
         public void removeSnakeParts(Guid snakeId, int count)
         {
-            for (int i = 0; i < count; i ++)
+            List<GameObject> bodyToRemoveFrom = snakeBodies[snakeId.ToString()];
+            int bodyLength = bodyToRemoveFrom.Count;
+            for (int i = bodyLength - 1; i < count; i --)
             {
-                List<GameObject> bodyToRemoveFrom = snakeBodies[snakeId.ToString()];
-                GameObject removedPart = bodyToRemoveFrom[bodyToRemoveFrom.Count - 1];
+                GameObject removedPart = bodyToRemoveFrom[i - 1];
+                bodyToRemoveFrom.RemoveAt(i - 1);
                 Destroy(removedPart);
-                bodyToRemoveFrom.RemoveAt(bodyToRemoveFrom.Count - 1);
+
             }
         }
 
