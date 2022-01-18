@@ -63,9 +63,14 @@ namespace MulticastReceive
                 try
                 {
 
-                    byte[] bytes = new Byte[130];
+                    byte[] bytes = new Byte[1000];
+
+                    //Debug.Log("AT THE TOP");
 
                     mcastSocket.ReceiveFrom(bytes, ref remoteEP);
+                    //Debug.Log(bytes);
+                    //Debug.Log(bytes.Length);
+
                     string snakeInfo = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
                     //TODO: Add a conditional check to see what type of message the broadcast is (snake movement / apple locations).
 
@@ -83,8 +88,13 @@ namespace MulticastReceive
                     int uidStart = snakeInfo.IndexOf("uid: ") + 5;
                     int uidEnd = snakeInfo.IndexOf("---end-uid---");
                     string uid = snakeInfo.Substring(uidStart, uidEnd - uidStart);
-
                     parsedUid = Guid.Parse(uid);
+
+                    int bodyStart = snakeInfo.IndexOf("body: ") + 6;
+                    int bodyEnd = snakeInfo.IndexOf("---end-body---");
+                    string bodyStr = snakeInfo.Substring(bodyStart, bodyEnd - bodyStart);
+                    //Debug.Log(bodyStr);
+
                     // If the snake is a new connection create a new snake
                     bool isNewSnake = !snakeMovement.checkIfSnakeExists(parsedUid);
 
@@ -92,37 +102,42 @@ namespace MulticastReceive
                     coordinateList = new List<Vector2>();
                     coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
 
-                    if (isNewSnake)
+                    string[] bodyArr = bodyStr.Split(' ');
+                    //Debug.Log("BODY ARR LENGTH: " + bodyArr.Length);
+                    for (int i = 0; i < bodyArr.Length - 1; i += 2)
                     {
+                        //coordinateList.Add(new Vector2(float.Parse(bodyArr[i]), float.Parse(bodyArr[i + 1])));
+                        //Debug.Log(coordinateList[i+1].x);
+                       // Debug.Log(coordinateList[i + 1].y);
+                    }
 
-
-                        Debug.Log(snakeInfo);
+                    if (isNewSnake && parsedUid != this.id)
+                    {
+                        //Debug.Log(snakeInfo);
                         Debug.Log("new");
 
                         newSnakeData = new Tuple<Guid, List<Vector2>>(parsedUid, coordinateList);
                         socketThreadRunning = false;
                         Debug.Log(newSnakeData);
                         Debug.Log(socketThreadRunning);
-
                     }
                     else if (uid != this.id.ToString())
                     {
-
-
                         mainThreadUpdate();
                     }
 
                 }
                 catch (Exception e)
                 {
+                    Debug.Log("CAUGHT ERROR");
                     Debug.Log(e);
                     Console.WriteLine(e.ToString());
                     socketThread.Abort();
                     mcastSocket.Close();
                 }
-                
+
             }
-            Debug.Log("test");
+            //Debug.Log("test");
             Debug.Log(socketThreadRunning);
             socketThread.Abort();
 
@@ -149,7 +164,11 @@ namespace MulticastReceive
 
         public IEnumerator functionExecution()
         {
-            snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+            if (parsedUid != this.id)
+            {
+                Debug.Log(parsedUid);
+                snakeMovement.updateSnakeLocation(parsedUid, coordinateList);
+            }
             yield return null;
         }
 

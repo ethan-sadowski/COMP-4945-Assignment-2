@@ -17,7 +17,6 @@ namespace SnakeMovementController
         // Start is called before the first frame update
         void Start()
         {
-            
             getSnakes();
         }
 

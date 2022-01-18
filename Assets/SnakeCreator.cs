@@ -47,15 +47,28 @@ namespace SnakeCreation {
 
         private void instantiateBody(List<Vector2> snakeCoordinateList)
         {
-            for (int i = 1; i < snakeCoordinateList.Count; i++)
-            {
-
-            }
+            //GameObject snakeHead = 
+            //for (int i = 1; i < snakeCoordinateList.Count; i++)
+            //{
+                //createSnakePart(snakeCoordinateList[i]);
+            //}
         }
 
-        public void createSnakePart(Vector2 snakeCoordinates)
+        public void createSnakePart(Vector2 snakeCoordinates, GameObject snakeHead)
         {
+/*            GameObject newSnake = new GameObject();
+            newSnake.AddComponent<SpriteRenderer>();
+            newSnake.GetComponent<SpriteRenderer>().color = snakeBodyPrefab.GetComponent<SpriteRenderer>().color;
+            newSnake.GetComponent<SpriteRenderer>().sprite = snakeBodyPrefab.GetComponent<SpriteRenderer>().sprite;
+            newSnake.AddComponent<Rigidbody2D>();
+            newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+            newSnake.AddComponent<BoxCollider2D>();
+            newSnake.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
 
+            newSnake.GetComponent<Transform>().position = snakeCoordinates;
+            newSnake.SetActive(true);
+
+            return newSnake;*/
         }
 
 

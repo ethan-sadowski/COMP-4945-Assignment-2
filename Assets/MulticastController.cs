@@ -60,16 +60,20 @@ namespace UDPController
 
             // TODO add handling for the rest of the snake's body
 
-            /*List<Vector2> snakeBody = snake.getBodyCoordinateList();
-            foreach(Vector2 location in snakeBody)
+            string snakeBodyStr = "body: ";
+            List<Vector2> snakeBody = snake.getBodyCoordinateList();
+
+            foreach (Vector2 location in snakeBody)
             {
-                Debug.Log(location);
-            }*/
-
+            //Debug.Log(location.x.ToString());
+            //Debug.Log(location.y.ToString());
+                snakeBodyStr += location.x.ToString() + " " + location.y.ToString() + " ";
+            }
+            snakeBodyStr += "---end-body---";
+            snakeInfo += snakeBodyStr;
+            Debug.Log(snakeInfo);
+            //Debug.Log(System.Text.ASCIIEncoding.Unicode.GetBytes(snakeInfo).Length);
             return snakeInfo;
-
         }
-
-
     }
 }
