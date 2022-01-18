@@ -8,3 +8,5 @@ Collect apples to increase the size of your snake, and avoid crashing into other
 
   - Clone the repository and run COMP_4959_Assignment_2.exe to run the game
   - Run multiple executables at once to create multiple clients
+
+### Source code is located in Assets
