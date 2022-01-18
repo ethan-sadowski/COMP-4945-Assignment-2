@@ -38,6 +38,7 @@ namespace SnakeCreation {
             newSnake.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
             newSnake.AddComponent<BoxCollider2D>();
             newSnake.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
+            newSnake.GetComponent<BoxCollider2D>().isTrigger = true;
             newSnake.GetComponent<Snake>().snakeBodyPrefab = snakeBodyPrefab;
             newSnake.GetComponent<Snake>().setId(id);
             newSnake.GetComponent<Transform>().position = snakeCoordinates[0];

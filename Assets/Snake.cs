@@ -48,19 +48,19 @@ namespace SnakeBehaviour
             return this.id;
         }
 
-        public void createBody()
+        public void createBody(Vector2 startingCoordinate)
         {
             this.snakeBody = new List<GameObject>();
             GameObject newBodyPiece;
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 8; i++)
             {
                 newBodyPiece = Instantiate(snakeBodyPrefab) as GameObject; 
 
                 // add physics to body
                 newBodyPiece.AddComponent<BoxCollider2D>();
                 newBodyPiece.GetComponent<BoxCollider2D>().size = new Vector2(0.75f, 0.75f);
-
                 newBodyPiece.SetActive(true);
+                newBodyPiece.GetComponent<Transform>().position = new Vector2(startingCoordinate.x, startingCoordinate.y - ((1 * i) + 1));
                 this.snakeBody.Add(newBodyPiece);
             }
         }
@@ -134,6 +134,7 @@ namespace SnakeBehaviour
             }
             else
             {
+                Debug.Log("impact");
                 // Snake body set to 1
                 for (int i = 1; i < this.snakeBody.Count; i++)
                 {

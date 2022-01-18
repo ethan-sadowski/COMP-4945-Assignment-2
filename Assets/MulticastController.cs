@@ -33,7 +33,7 @@ namespace UDPController
             List<Vector2> startingList = new List<Vector2>();
             startingList.Add(startingCoordinate);
             GameObject playerSnake = snakeCreator.instantiateSnake(id, startingList);
-            playerSnake.GetComponent<Snake>().createBody();
+            playerSnake.GetComponent<Snake>().createBody(startingCoordinate);
 
             receiver.setId(id);
             snakeMovement.setNativeSnakeId(id);
@@ -71,7 +71,6 @@ namespace UDPController
             }
             snakeBodyStr += "---end-body---";
             snakeInfo += snakeBodyStr;
-            Debug.Log(snakeInfo);
             //Debug.Log(System.Text.ASCIIEncoding.Unicode.GetBytes(snakeInfo).Length);
             return snakeInfo;
         }

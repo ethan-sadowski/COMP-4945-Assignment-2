@@ -103,7 +103,6 @@ namespace MulticastReceive
                     coordinateList.Add(new Vector2(xcoordinate, ycoordinate));
 
                     string[] bodyArr = bodyStr.Split(' ');
-                    Debug.Log(bodyStr);
                     //Debug.Log("BODY ARR LENGTH: " + bodyArr.Length);
                     for (int i = 0; i < bodyArr.Length - 2; i += 2)
                     {
@@ -158,7 +157,6 @@ namespace MulticastReceive
 
         public IEnumerator functionExecution()
         {
-            Debug.Log(parsedUid);
             int bodySize = snakeMovement.getBodySizeById(parsedUid);
             if (bodySize < coordinateList.Count)
             {
