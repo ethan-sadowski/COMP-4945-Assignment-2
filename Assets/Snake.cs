@@ -5,6 +5,7 @@ using System;
 
 namespace SnakeBehaviour
 {
+    //Worked on by Ethan Sadowski, Jimun Jang, and Bryan Xing
     public class Snake : MonoBehaviour
     {
 

@@ -9,6 +9,7 @@ using System;
 
 namespace SnakeMovementController
 {
+    //Worked on by Ethan Sadowski
     public class SnakeMovement : MonoBehaviour
     {
         Dictionary<string, GameObject> snakes;

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Worked on by Bryan Xing and Ethan Sadowski
 public class SpawnFood : MonoBehaviour
 {
     public GameObject food;
